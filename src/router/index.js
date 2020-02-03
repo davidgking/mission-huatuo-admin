@@ -173,7 +173,6 @@ export const asyncRoutes = [
       }
     ]
   },
-
   {
     path: '/icon',
     component: Layout,
