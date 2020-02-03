@@ -14,18 +14,21 @@ const tableRouter = {
   children: [
     {
       path: 'dynamic-table',
+      hidden: true,
       component: () => import('@/views/table/dynamic-table/index'),
       name: 'DynamicTable',
       meta: { title: 'Dynamic Table' }
     },
     {
       path: 'drag-table',
+      hidden: true,
       component: () => import('@/views/table/drag-table'),
       name: 'DragTable',
       meta: { title: 'Drag Table' }
     },
     {
       path: 'inline-edit-table',
+      hidden: true,
       component: () => import('@/views/table/inline-edit-table'),
       name: 'InlineEditTable',
       meta: { title: 'Inline Edit' }
