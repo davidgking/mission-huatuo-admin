@@ -76,6 +76,7 @@
 <script>
 import { validUsername } from '@/utils/validate'
 import SocialSign from './components/SocialSignin'
+// import Health from '@/api/health'
 
 export default {
   name: 'Login',
@@ -153,6 +154,10 @@ export default {
       })
     },
     handleLogin() {
+      // Health.getHealth().then(response => {
+      // VPN.vpnReport({ day: 30 }).then(response => {
+      //   console.log(response)
+      // })
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
