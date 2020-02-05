@@ -15,7 +15,7 @@ for (let i = 0; i < count; i++) {
     team: 'RBWM Digital',
     phoneNo: 1350978081+i,
     mail: 'test' + i + '@noexternal.hsbc.com.cn',
-    status: 'published'
+    status: 'enable'
   }
   List.push(Mock.mock(p_1))
   // List.push(Mock.mock({

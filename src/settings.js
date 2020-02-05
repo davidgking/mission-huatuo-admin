@@ -1,5 +1,5 @@
 module.exports = {
-  title: 'HuaTuo Admin',
+  title: 'HuaTuo-Admin',
 
   /**
    * @type {boolean} true | false
