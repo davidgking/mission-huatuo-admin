@@ -24,7 +24,7 @@ export default {
   },
   data() {
     return {
-      title: 'HuaTuo Admin',
+      title: 'HuaTuo-Admin',
       logo: '@/assets/huatuo_logo/huatuo_logo.png'
     }
   }

@@ -111,6 +111,18 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/vpnInfo',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/vpn-info/index'),
+        name: 'vpn',
+        meta: { title: 'VPN问题报告', icon: 'international', noCache: true }
+      }
+    ]
+  },
+  {
     path: '/profile',
     hidden: true,
     component: Layout,
@@ -178,19 +190,6 @@ export const asyncRoutes = [
   chartsRouter,
   nestedRouter,
   tableRouter,
-
-  {
-    path: '/vpnInfo',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/vpn-info/index'),
-        name: 'vpn',
-        meta: { title: 'VPN问题列表', icon: 'international', noCache: true }
-      }
-    ]
-  },
 
   {
     path: '/example',

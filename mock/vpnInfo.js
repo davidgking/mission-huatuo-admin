@@ -1,7 +1,7 @@
 import Mock from 'mockjs'
 
 const List = []
-const count = 100
+const count = 10
 
 for (let i = 0; i < count; i++) {
   let p_1 = {
@@ -29,14 +29,14 @@ for (let i = 0; i < count; i++) {
     other: '',
     vpnLocal: '',
     vpnState: '',
-    lastUpatetime: '2020-01-11'
+    lastUpatetime: '2020-01-11 00:12:23'
   }
   List.push(Mock.mock(p_1))
 }
 
 export default [
   {
-    url: '/vue-element-admin/vpnInfo/list',
+    url: '/vpn/reportQuery',
     type: 'get',
     response: config => {
       const { importance, type, title, page = 1, limit = 20, sort } = config.query
