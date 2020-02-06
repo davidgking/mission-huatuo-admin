@@ -80,7 +80,6 @@ import { fetchArticle } from '@/api/article'
 import { searchUser } from '@/api/remote-search'
 import Warning from './Warning'
 import { CommentDropdown, PlatformDropdown, SourceUrlDropdown } from './Dropdown'
-import VPN from '@/api/vpn'
 
 const defaultForm = {
   status: 'draft',
@@ -172,10 +171,6 @@ export default {
     // Because if you enter this page and quickly switch tag, may be in the execution of the setTagsViewTitle function, this.$route is no longer pointing to the current page
     // https://github.com/PanJiaChen/vue-element-admin/issues/1221
     this.tempRoute = Object.assign({}, this.$route)
-    // test local server
-    VPN.testApi({}).then(response => {
-      console.log(response)
-    })
   },
   methods: {
     fetchData(id) {
