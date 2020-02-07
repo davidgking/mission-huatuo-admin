@@ -59,7 +59,7 @@
         <span>预览</span>
       </div>
       <div class="new-prew-content">
-        <div>{{ prewData.title }}</div>
+        <div class="prew-title">{{ prewData.title }}</div>
         <div>
           <div class="half-box">来源: {{ prewData.source }}</div>
           <div class="half-box">发布时间：{{ prewData.date }}</div>
@@ -152,8 +152,10 @@ export default {
     openPrew(data) {
       this.prewData = data
       this.PrewVisible = true
-      const prewContent = document.querySelector('#prewContent')
-      prewContent.innerHTML = data.content
+      this.$nextTick(() => {
+        const prewContent = document.querySelector('#prewContent')
+        prewContent.innerHTML = data.content
+      })
     },
     closePrew() {
       this.PrewVisible = false
@@ -162,7 +164,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss">
 .edit-input {
   padding-right: 100px;
 }
@@ -171,8 +173,20 @@ export default {
   right: 15px;
   top: 10px;
 }
-.new-prew-content .half-box {
-  display: inline-block;
-  width: 50%
+.new-prew-content {
+  font-size: 16px;
+  line-height: 1.2;
+  margin: 0 20px;
+  .prew-title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 900;
+    margin: 10px;
+  }
+  .half-box {
+    display: inline-block;
+    width: 48%;
+    padding: 10px 30px;
+  }
 }
 </style>
