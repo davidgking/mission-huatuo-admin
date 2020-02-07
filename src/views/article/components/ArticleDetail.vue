@@ -27,9 +27,10 @@
               <el-row>
                 <el-col :span="8">
                   <el-form-item label-width="60px" label="作者:" class="postInfo-container-item">
-                    <el-select v-model="postForm.author" :remote-method="getRemoteUserList" filterable default-first-option remote placeholder="Search user">
+                    <!-- <el-select v-model="postForm.source" :remote-method="getRemoteUserList" filterable default-first-option remote placeholder="Search user">
                       <el-option v-for="(item,index) in userListOptions" :key="item+index" :label="item" :value="item" />
-                    </el-select>
+                    </el-select> -->
+                    <el-input v-model="postForm.source" />
                   </el-form-item>
                 </el-col>
 
@@ -42,7 +43,7 @@
                 <el-col :span="6">
                   <el-form-item label-width="90px" label="关注度:" class="postInfo-container-item">
                     <el-rate
-                      v-model="postForm.importance"
+                      v-model="postForm.priority"
                       :max="3"
                       :colors="['#99A9BF', '#F7BA2A', '#FF9900']"
                       :low-threshold="1"
@@ -56,10 +57,10 @@
           </el-col>
         </el-row>
 
-        <el-form-item style="margin-bottom: 40px;" label-width="60px" label="摘要:">
+        <!-- <el-form-item style="margin-bottom: 40px;" label-width="60px" label="摘要:">
           <el-input v-model="postForm.content_short" :rows="1" type="textarea" class="article-textarea" autosize placeholder="Please enter the content" />
           <span v-show="contentShortLength" class="word-counter">{{ contentShortLength }}words</span>
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item prop="content" style="margin-bottom: 30px;">
           <Tinymce ref="editor" v-model="postForm.content" :height="400" />
@@ -75,21 +76,14 @@ import MDinput from '@/components/MDinput'
 import Sticky from '@/components/Sticky' // 粘性header组件
 import { validURL } from '@/utils/validate'
 import { searchUser } from '@/api/remote-search'
-import Articles from '@/api/articles'
+import News from '@/api/news'
 // import { CommentDropdown, PlatformDropdown } from './Dropdown'
 
 const defaultForm = {
-  status: 'draft',
   title: '', // 文章题目
   content: '', // 文章内容
-  content_short: '', // 文章摘要
-  source_uri: '', // 文章外链
-  image_uri: '', // 文章图片
   display_time: undefined, // 前台展示时间
-  id: undefined,
-  platforms: ['a-platform'],
-  comment_disabled: false,
-  importance: 0
+  id: undefined
 }
 
 export default {
@@ -104,11 +98,23 @@ export default {
   data() {
     const validateRequire = (rule, value, callback) => {
       if (value === '') {
+        let text
+        switch (rule.field) {
+          case 'title':
+            text = '标题'
+            break
+          case 'source':
+            text = '作者'
+            break
+          case 'content':
+            text = '内容'
+            break
+        }
         this.$message({
-          message: rule.field + '为必传项',
+          message: text + '为必填项',
           type: 'error'
         })
-        callback(new Error(rule.field + '为必传项'))
+        callback(new Error(text + '为必填项'))
       } else {
         callback()
       }
@@ -129,6 +135,7 @@ export default {
       }
     }
     return {
+      id: null,
       postForm: Object.assign({}, defaultForm),
       loading: false,
       userListOptions: [],
@@ -162,6 +169,7 @@ export default {
     if (this.isEdit) {
       const id = this.$route.params && this.$route.params.id
       this.getDetail(id)
+      this.id = id
     }
 
     // Why need to make a copy of this.$route here?
@@ -171,10 +179,14 @@ export default {
   },
   methods: {
     getDetail(id) {
-      Articles.getDetail(id).then(response => {
-        this.postForm = response.data
+      News.fecthList().then(response => {
+        response.items.forEach((item) => {
+          if (item.id === Number(id)) {
+            this.postForm = item
+            this.postForm.display_time = item.date
+          }
+        })
 
-        // just for test
         this.postForm.content_short += `   Article Id:${this.postForm.id}`
 
         // set tagsview title
@@ -187,26 +199,38 @@ export default {
       })
     },
     setTagsViewTitle() {
-      const title = 'Edit Article'
+      const title = '编辑新闻'
       const route = Object.assign({}, this.tempRoute, { title: `${title}-${this.postForm.id}` })
       this.$store.dispatch('tagsView/updateVisitedView', route)
     },
     setPageTitle() {
-      const title = 'Edit Article'
+      const title = '编辑新闻'
       document.title = `${title} - ${this.postForm.id}`
     },
     submitForm() {
       this.$refs.postForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$notify({
-            title: '成功',
-            message: '发布文章成功',
-            type: 'success',
-            duration: 2000
+          const data = Object.assign({}, this.postForm)
+          data.enable = 'Y'
+          data.date = this.displayTime
+          if (this.id) {
+            data.id = this.id
+          }
+          News.updateNews(data).then(response => {
+            this.$notify({
+              title: '成功',
+              message: '发布文章成功',
+              type: 'success',
+              duration: 2000
+            })
+            this.loading = false
+            if (!this.id) {
+              this.resetForm()
+            }
+          }).catch(err => {
+            console.log(err)
           })
-          this.postForm.status = 'published'
-          this.loading = false
         } else {
           console.log('error submit!!')
           return false
@@ -221,19 +245,36 @@ export default {
         })
         return
       }
-      this.$message({
-        message: '保存成功',
-        type: 'success',
-        showClose: true,
-        duration: 1000
+      const data = Object.assign({}, this.postForm)
+      data.enable = 'N'
+      data.date = this.displayTime
+      if (this.id) {
+        data.id = this.id
+      }
+      News.updateNews(data).then(response => {
+        this.$message({
+          message: '保存草稿成功',
+          type: 'success',
+          showClose: true,
+          duration: 1000
+        })
+        this.loading = false
+        if (!this.id) {
+          this.resetForm()
+        }
+      }).catch(err => {
+        console.log(err)
       })
-      this.postForm.status = 'draft'
     },
     getRemoteUserList(query) {
       searchUser(query).then(response => {
         if (!response.data.items) return
         this.userListOptions = response.data.items.map(v => v.name)
       })
+    },
+    resetForm() {
+      this.postForm = Object.assign({}, defaultForm)
+      this.$refs.editor.setContent('')
     }
   }
 }

@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-select v-model="listQuery.type" placeholder="类型" size="small" style="width:160px;">
+      <el-select v-model="listQuery.type" placeholder="类型" size="small" style="width:160px;" class="filter-item">
         <el-option v-for="item in typeList" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
-      <el-select v-model="listQuery.require" placeholder="是否必答" size="small" style="width:160px;">
+      <el-select v-model="listQuery.require" placeholder="是否必答" size="small" style="width:160px;" class="filter-item">
         <el-option v-for="item in requireList" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
       <el-button class="filter-item" size="small" type="primary" icon="el-icon-search" @click="handleFilter">
@@ -138,7 +138,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      Survey.getList(this.listQuery).then(response => {
+      Survey.queList(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total
         this.listLoading = false
