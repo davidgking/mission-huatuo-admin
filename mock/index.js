@@ -8,11 +8,10 @@ import search from './remote-search'
 import vpnInfo from './vpnInfo'
 
 const mocks = [
-  ...user,
+  // ...user,
   ...role,
-  ...article,
-  ...search,
-  ...vpnInfo
+  // ...article,
+  ...search
 ]
 
 // for front mock

@@ -121,7 +121,18 @@ export const asyncRoutes = [
       }
     ]
   },
-
+  {
+    path: '/vpnInfo',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/vpn-info/index'),
+        name: 'vpn',
+        meta: { title: 'VPN问题报告', icon: 'international', noCache: true }
+      }
+    ]
+  },
   {
     path: '/icon',
     component: Layout,

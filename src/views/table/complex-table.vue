@@ -25,14 +25,9 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="ID" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
-        <template slot-scope="{row}">
-          <span>{{ row.id }}</span>
-        </template>
-      </el-table-column>
       <el-table-column label="Staff Id" width="120px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.staffId }}</span>
+          <span>{{ row.notify.staffId }}</span>
         </template>
       </el-table-column>
       <el-table-column label="姓名" width="160px" align="center">
@@ -47,21 +42,21 @@
       </el-table-column>
       <el-table-column label="手机号码" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.phoneNo }}</span>
+          <span>{{ row.staffListEntity.mobileNum }}</span>
         </template>
       </el-table-column>
       <el-table-column label="邮箱" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.mail }}</span>
+          <span>{{ row.staffListEntity.emailAddress }}</span>
         </template>
       </el-table-column>
       <el-table-column label="状态" align="center" width="100px">
         <template slot-scope="{row}">
           <el-switch
-            v-model="row.status"
+            v-model="row.notify.status"
             active-color="#13ce66"
-            active-value="enable"
-            inactive-value="disable"
+            active-value="0"
+            inactive-value="1"
           />
         </template>
       </el-table-column>
@@ -91,10 +86,10 @@
           <el-input v-model="temp.team" />
         </el-form-item>
         <el-form-item label="手机号码" prop="phoneNo">
-          <el-input v-model="temp.phoneNo" />
+          <el-input v-model="temp.mobileNum" />
         </el-form-item>
         <el-form-item label="邮箱" prop="mail">
-          <el-input v-model="temp.mail" />
+          <el-input v-model="temp.emailAddress" />
         </el-form-item>
         <el-form-item label="即时启用" prop="mail">
           <el-switch
@@ -128,7 +123,7 @@
 </template>
 
 <script>
-import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
+import { fetchList, saveNotify, deleteNotify } from '@/api/article'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -190,13 +185,9 @@ export default {
     getList() {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.total = response.data.total
-
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
+        this.list = response.items
+        this.total = response.total
+        this.listLoading = false
       })
     },
     handleFilter() {
@@ -226,13 +217,17 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        id: undefined,
-        staffId: '',
-        name: '',
-        phoneNo: '',
-        mail: '',
-        status: 'disable',
-        team: ''
+        notify: {
+          staffId: '',
+          status: '1'
+        },
+        staffListEntity: {
+          staffId: this.temp.notify.staffId,
+          name: '',
+          team: '',
+          emailAddress: '',
+          mobileNum: ''
+        }
       }
     },
     handleCreate() {
@@ -246,10 +241,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          this.temp.author = 'vue-element-admin'
-          createArticle(this.temp).then(() => {
-            this.list.unshift(this.temp)
+          saveNotify(this.temp).then(() => {
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
@@ -274,10 +266,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateArticle(tempData).then(() => {
-            const index = this.list.findIndex(v => v.id === this.temp.id)
-            this.list.splice(index, 1, this.temp)
+          saveNotify(tempData).then(() => {
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
@@ -290,18 +279,14 @@ export default {
       })
     },
     handleDelete(row, index) {
-      this.$notify({
-        title: 'Success',
-        message: 'Delete Successfully',
-        type: 'success',
-        duration: 2000
-      })
-      this.list.splice(index, 1)
-    },
-    handleFetchPv(pv) {
-      fetchPv(pv).then(response => {
-        this.pvData = response.data.pvData
-        this.dialogPvVisible = true
+      deleteNotify(row.notify.staffId).then(res => {
+        this.$notify({
+          title: 'Success',
+          message: 'Delete Successfully',
+          type: 'success',
+          duration: 2000
+        })
+        this.getList()
       })
     },
     handleDownload() {
@@ -326,10 +311,6 @@ export default {
           return v[j]
         }
       }))
-    },
-    getSortClass: function(key) {
-      const sort = this.listQuery.sort
-      return sort === `+${key}` ? 'ascending' : 'descending'
     }
   }
 }

@@ -14,23 +14,22 @@ const port = process.env.port || process.env.npm_config_port || 9527 // dev port
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
   publicPath: './',
-  outputDir: 'dist',
+  outputDir: 'HuaTuo',
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {
     port: port,
     open: true,
-    host: "localhost", 
+    host: "localhost",
     https: false,
-    hotOnly: false, 
+    hotOnly: false,
     proxy: {
-        '/api': {
-            target: 'http://localhost:9090', //API服务器的地址
-            ws: false,  //代理websockets
+        '/huatuo-admin/api': {
+            target: 'http://localhost:9090/huatuo-admin/api', //API服务器的地址
             changeOrigin: true, // 虚拟的站点需要更管origin
             pathRewrite: {   //重写路径 比如'/api/aaa/ccc'重写为'/aaa/ccc'
-              '^/api': ''
+              '^/huatuo-admin/api': ''
             }
         }
     },
