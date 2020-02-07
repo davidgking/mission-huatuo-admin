@@ -6,12 +6,15 @@ import role from './role'
 import article from './article'
 import search from './remote-search'
 import vpnInfo from './vpnInfo'
+import testBao from './test-bao'
 
 const mocks = [
   // ...user,
   ...role,
   // ...article,
-  ...search
+  ...search,
+  ...vpnInfo,
+  ...testBao
 ]
 
 // for front mock

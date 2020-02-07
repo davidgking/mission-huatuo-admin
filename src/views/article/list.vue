@@ -7,47 +7,45 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="180px" align="center" label="Date">
+      <el-table-column width="180px" align="center" label="发布时间">
         <template slot-scope="scope">
           <span>{{ scope.row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="120px" align="center" label="Author">
+      <el-table-column width="120px" align="center" label="作者">
         <template slot-scope="scope">
           <span>{{ scope.row.author }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="100px" label="Importance">
+      <el-table-column width="100px" label="关注度">
         <template slot-scope="scope">
           <svg-icon v-for="n in +scope.row.importance" :key="n" icon-class="star" class="meta-item__icon" />
         </template>
       </el-table-column>
 
-      <el-table-column class-name="status-col" label="Status" width="110">
+      <el-table-column class-name="status-col" label="状态" width="110">
         <template slot-scope="{row}">
           <el-tag :type="row.status | statusFilter">
-            {{ row.status }}
+            {{ row.status | statusTextFilter }}
           </el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column min-width="300px" label="Title">
+      <el-table-column min-width="300px" label="标题">
         <template slot-scope="{row}">
-          <router-link :to="'/example/edit/'+row.id" class="link-type">
-            <span>{{ row.title }}</span>
-          </router-link>
+          <span>{{ row.title }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="Actions" width="120">
+      <el-table-column align="left" label="操作" min-width="120">
         <template slot-scope="scope">
-          <router-link :to="'/example/edit/'+scope.row.id">
-            <el-button type="primary" size="small" icon="el-icon-edit">
-              Edit
-            </el-button>
+          <router-link v-if="scope.row.status === 'draft'" :to="'/article/edit/'+scope.row.id">
+            <el-button type="primary" size="small">编辑</el-button>
           </router-link>
+          <el-button v-if="scope.row.status === 'draft'" type="danger" size="small" @click="deleteRow(scope.row)">删除</el-button>
+          <el-button v-if="scope.row.status !== 'draft'" type="info" size="small" @click="updateState(scope.row)">下架</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -57,8 +55,8 @@
 </template>
 
 <script>
-import { fetchList } from '@/api/article'
-import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import Articles from '@/api/articles'
+import Pagination from '@/components/Pagination'
 
 export default {
   name: 'ArticleList',
@@ -71,6 +69,13 @@ export default {
         deleted: 'danger'
       }
       return statusMap[status]
+    },
+    statusTextFilter(status) {
+      let res = '已发布'
+      if (status === 'draft') {
+        res = '草稿'
+      }
+      return res
     }
   },
   data() {
@@ -90,10 +95,38 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      fetchList(this.listQuery).then(response => {
+      Articles.getList(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total
         this.listLoading = false
+      })
+    },
+    deleteRow(row) {
+      Articles.deleteArticle({ id: row.id }).then(response => {
+        let index
+        this.list.forEach((item, ind) => {
+          if (item.id === row.id) {
+            index = ind
+          }
+        })
+        this.list.splice(index, 1)
+        this.$notify({
+          title: '成功',
+          message: '删除文章成功',
+          type: 'success',
+          duration: 2000
+        })
+      })
+    },
+    updateState(row) {
+      Articles.updateState({ id: row.id }).then(response => {
+        row.status = 'draft'
+        this.$notify({
+          title: '成功',
+          message: '文章已成功下架',
+          type: 'success',
+          duration: 2000
+        })
       })
     }
   }
