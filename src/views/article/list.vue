@@ -46,13 +46,27 @@
             <el-button type="primary" size="small">编辑</el-button>
           </router-link>
           <el-button v-if="scope.row.enable === 'N'" type="danger" size="small" @click="deleteRow(scope.row)">删除</el-button>
-          <el-button v-if="scope.row.enable !== 'N'" type="warning" size="small">预览</el-button>
+          <el-button v-if="scope.row.enable !== 'N'" type="warning" size="small" @click="openPrew(scope.row)">预览</el-button>
           <el-button v-if="scope.row.enable !== 'N'" type="info" size="small" style="margin-left:0;" @click="updateState(scope.row)">下架</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+
+    <el-dialog ref="timeDlg" :visible.sync="PrewVisible" :close-on-click-modal="false" @close="closePrew">
+      <div slot="title">
+        <span>预览</span>
+      </div>
+      <div class="new-prew-content">
+        <div>{{ prewData.title }}</div>
+        <div>
+          <div class="half-box">来源: {{ prewData.source }}</div>
+          <div class="half-box">发布时间：{{ prewData.date }}</div>
+        </div>
+        <div id="prewContent" />
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -88,7 +102,9 @@ export default {
       listQuery: {
         page: 1,
         limit: 20
-      }
+      },
+      prewData: {},
+      PrewVisible: false
     }
   },
   created() {
@@ -132,6 +148,15 @@ export default {
           duration: 2000
         })
       })
+    },
+    openPrew(data) {
+      this.prewData = data
+      this.PrewVisible = true
+      const prewContent = document.querySelector('#prewContent')
+      prewContent.innerHTML = data.content
+    },
+    closePrew() {
+      this.PrewVisible = false
     }
   }
 }
@@ -145,5 +170,9 @@ export default {
   position: absolute;
   right: 15px;
   top: 10px;
+}
+.new-prew-content .half-box {
+  display: inline-block;
+  width: 50%
 }
 </style>
