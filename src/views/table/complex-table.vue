@@ -42,12 +42,12 @@
       </el-table-column>
       <el-table-column label="手机号码" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.staffListEntity.mobileNum }}</span>
+          <span>{{ row.staffList.mobileNum }}</span>
         </template>
       </el-table-column>
       <el-table-column label="邮箱" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.staffListEntity.emailAddress }}</span>
+          <span>{{ row.staffList.emailAddress }}</span>
         </template>
       </el-table-column>
       <el-table-column label="状态" align="center" width="100px">
@@ -221,7 +221,7 @@ export default {
           staffId: '',
           status: '1'
         },
-        staffListEntity: {
+        staffList: {
           staffId: this.temp.notify.staffId,
           name: '',
           team: '',
