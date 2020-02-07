@@ -30,16 +30,6 @@
           <span>{{ row.notify.staffId }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="姓名" width="160px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.name }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="所属部门" width="160px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.team }}</span>
-        </template>
-      </el-table-column>
       <el-table-column label="手机号码" width="110px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.staffList.mobileNum }}</span>
@@ -50,13 +40,46 @@
           <span>{{ row.staffList.emailAddress }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" align="center" width="100px">
+      <el-table-column label="开启通知" align="center" width="100px">
         <template slot-scope="{row}">
           <el-switch
-            v-model="row.notify.status"
+            v-model="row.notify.enable"
             active-color="#13ce66"
-            active-value="0"
-            inactive-value="1"
+            active-value="Y"
+            inactive-value="N"
+            @change="switchStatus(row)"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column label="短信通知" align="center" width="120px">
+        <template slot-scope="{row}">
+          <el-switch
+            v-model="row.notify.smsEnable"
+            active-color="#13ce66"
+            active-value="Y"
+            inactive-value="N"
+            @change="switchStatus(row)"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column label="邮件通知" align="center" width="100px">
+        <template slot-scope="{row}">
+          <el-switch
+            v-model="row.notify.mailEnable"
+            active-color="#13ce66"
+            active-value="Y"
+            inactive-value="N"
+            @change="switchStatus(row)"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column label="微信推送" align="center" width="100px">
+        <template slot-scope="{row}">
+          <el-switch
+            v-model="row.notify.wechatPushEnable"
+            active-color="#13ce66"
+            active-value="Y"
+            inactive-value="N"
             @change="switchStatus(row)"
           />
         </template>
@@ -80,24 +103,45 @@
         <el-form-item label="Staff Id" prop="staffId">
           <el-input v-model="temp.staffId" />
         </el-form-item>
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="temp.name" />
+        <el-form-item label="APP Id" prop="appId">
+          <el-input v-model="temp.appId" />
         </el-form-item>
-        <el-form-item label="所属部门" prop="team">
-          <el-input v-model="temp.team" />
+        <el-form-item label="开启通知" prop="enable">
+          <el-switch
+            v-model="temp.enable"
+            active-color="#13ce66"
+            active-value="Y"
+            inactive-value="N"
+          />
         </el-form-item>
         <el-form-item label="手机号码" prop="mobileNum">
           <el-input v-model="temp.mobileNum" />
         </el-form-item>
+        <el-form-item label="短信通知" prop="smsEnable">
+          <el-switch
+            v-model="temp.smsEnable"
+            active-color="#13ce66"
+            active-value="Y"
+            inactive-value="N"
+          />
+        </el-form-item>
         <el-form-item label="邮箱" prop="emailAddress">
           <el-input v-model="temp.emailAddress" />
         </el-form-item>
-        <el-form-item label="即时启用" prop="status">
+        <el-form-item label="邮箱通知" prop="mailEnable">
           <el-switch
-            v-model="temp.status"
+            v-model="temp.mailEnable"
             active-color="#13ce66"
-            active-value="0"
-            inactive-value="1"
+            active-value="Y"
+            inactive-value="N"
+          />
+        </el-form-item>
+        <el-form-item label="微信推送通知" prop="wechatPushEnable">
+          <el-switch
+            v-model="temp.wechatPushEnable"
+            active-color="#13ce66"
+            active-value="Y"
+            inactive-value="N"
           />
         </el-form-item>
       </el-form>
@@ -146,6 +190,7 @@ export default {
         staffId: undefined,
         name: undefined,
         team: undefined,
+        appId: 'wx9812117be87d24d2',
         sort: '+id'
       },
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
@@ -158,7 +203,12 @@ export default {
         team: '',
         mobileNum: '',
         emailAddress: '',
-        status: '1'
+        status: '1',
+        appId: '',
+        enable: 'Y',
+        smsEnable: 'Y',
+        mailEnable: 'Y',
+        wechatPushEnable: 'Y'
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -170,11 +220,10 @@ export default {
       pvData: [],
       rules: {
         staffId: [{ required: true, message: '请输入Staff Id', trigger: 'blur' }],
-        team: [{ required: true, message: '请输入部门', trigger: 'blur' }],
+        appId: [{ required: true, message: '请输入APP Id', trigger: 'blur' }],
         mobileNum: [{ required: true, message: '请输入手机号码', trigger: 'blur' }],
         emailAddress: [{ required: true, message: '请输入邮箱地址', trigger: 'blur' },
-          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }],
-        name: [{ required: true, message: '请输入姓名', trigger: 'blur' }]
+          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }]
       },
       downloadLoading: false
     }
@@ -220,8 +269,11 @@ export default {
       this.temp = {
         staffId: '',
         status: '1',
-        name: '',
-        team: '',
+        enable: 'N',
+        smsEnable: 'N',
+        mailEnable: 'N',
+        wechatPushEnable: 'N',
+        appId: '',
         emailAddress: '',
         mobileNum: ''
       }
@@ -254,8 +306,11 @@ export default {
       this.temp = {
         staffId: row.notify.staffId,
         status: row.notify.status,
-        name: '',
-        team: '',
+        enable: row.notify.enable,
+        smsEnable: row.notify.smsEnable,
+        mailEnable: row.notify.mailEnable,
+        wechatPushEnable: row.notify.wechatPushEnable,
+        appId: row.notify.appId,
         emailAddress: row.staffList.emailAddress,
         mobileNum: row.staffList.mobileNum
       }
@@ -269,8 +324,11 @@ export default {
       this.temp = {
         staffId: row.notify.staffId,
         status: row.notify.status,
-        name: '',
-        team: '',
+        enable: row.notify.enable,
+        smsEnable: row.notify.smsEnable,
+        mailEnable: row.notify.mailEnable,
+        wechatPushEnable: row.notify.wechatPushEnable,
+        appId: row.notify.appId,
         emailAddress: row.staffList.emailAddress,
         mobileNum: row.staffList.mobileNum
       }
