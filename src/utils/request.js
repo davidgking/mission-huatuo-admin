@@ -10,7 +10,7 @@ const service = axios.create({
     'Accept': 'application/json, text/plain, */*; charset=utf-8',
     'X-IS-DUMMY': 'test'
   },
-  // withCredentials: true, // send cookies when cross-domain requests
+  responseType: 'json',
   timeout: 30000 // request timeout
 })
 

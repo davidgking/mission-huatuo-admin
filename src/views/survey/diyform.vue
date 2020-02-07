@@ -1,11 +1,9 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-select v-model="listQuery.type" placeholder="类型" size="small" style="width:160px;">
-        <el-option v-for="item in typeList" :key="item.value" :label="item.label" :value="item.value" />
-      </el-select>
-      <el-select v-model="listQuery.require" placeholder="是否必答" size="small" style="width:160px;">
-        <el-option v-for="item in requireList" :key="item.value" :label="item.label" :value="item.value" />
+      <el-input v-model="listQuery.id" placeholder="ID" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-select v-model="listQuery.published" placeholder="是否已发布" size="small" style="width:160px;" class="filter-item">
+        <el-option v-for="item in statusList" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
       <el-button class="filter-item" size="small" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
@@ -22,33 +20,27 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="类型">
+      <el-table-column width="300px" align="center" label="调研表名称">
         <template slot-scope="{row}">
-          <span>{{ row.type | typeFilter }}</span>
+          <span>{{ row.formName }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="300px" align="center" label="问题">
+      <el-table-column width="80px" align="center" label="已发布">
         <template slot-scope="{row}">
-          <span>{{ row.title }}</span>
+          <span>{{ row.published | statusFilter }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="80px" align="center" label="必答">
-        <template slot-scope="{row}">
-          <span>{{ row.require | requireFilter }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column min-width="100px" align="center" label="答案">
-        <template slot-scope="{row}">
-          <span>{{ row.answer }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="备注">
+      <el-table-column min-width="100px" label="描述">
         <template slot-scope="{row}">
           <span>{{ row.remark }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="发布时间">
+        <template slot-scope="{row}">
+          <span>{{ row.datetime }}</span>
         </template>
       </el-table-column>
 
@@ -89,7 +81,7 @@ export default {
       }
       return text
     },
-    requireFilter(value) {
+    statusFilter(value) {
       let text
       switch (Number(value)) {
         case 1:
@@ -123,7 +115,7 @@ export default {
         label: '多项选择',
         value: 3
       }],
-      requireList: [{
+      statusList: [{
         label: '是',
         value: 1
       }, {
@@ -138,7 +130,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      Survey.getList(this.listQuery).then(response => {
+      Survey.diyList(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total
         this.listLoading = false

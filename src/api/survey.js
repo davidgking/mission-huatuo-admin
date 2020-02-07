@@ -1,6 +1,14 @@
 import request from '@/utils/request'
 
-export function getList(query) {
+export function diyList(query) {
+  return request({
+    url: '/vue-element-admin/diyform/list',
+    method: 'get',
+    params: query
+  })
+}
+
+export function queList(query) {
   return request({
     url: '/vue-element-admin/question/list',
     method: 'get',
@@ -41,7 +49,8 @@ export function updateQue(data) {
 }
 
 const Survey = {
-  getList: getList,
+  diyList: diyList,
+  queList: queList,
   getDetail: getDetail,
   deleteQue: deleteQue,
   createQue: createQue,
