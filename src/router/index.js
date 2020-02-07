@@ -143,33 +143,59 @@ export const asyncRoutes = [
   tableRouter,
 
   {
-    path: '/example',
+    path: '/article',
     component: Layout,
-    redirect: '/example/list',
-    name: 'Example',
+    redirect: '/article/list',
+    name: 'Article',
     meta: {
-      title: '模板管理',
+      title: '新闻资讯管理',
       icon: 'example'
     },
     children: [
       {
+        path: 'list',
+        component: () => import('@/views/article/list'),
+        name: 'ArticleList',
+        meta: { title: '新闻发布管理', icon: 'list' }
+      },
+      {
         path: 'create',
-        component: () => import('@/views/example/create'),
+        component: () => import('@/views/article/create'),
         name: 'CreateArticle',
-        meta: { title: '创建模板', icon: 'edit' }
+        meta: { title: '创建新闻', icon: 'edit' }
       },
       {
         path: 'edit/:id(\\d+)',
-        component: () => import('@/views/example/edit'),
+        component: () => import('@/views/article/edit'),
         name: 'EditArticle',
-        meta: { title: '编辑模板', noCache: true, activeMenu: '/example/list' },
+        meta: { title: '编辑新闻', noCache: true, activeMenu: '/article/list' },
         hidden: true
+      }
+    ]
+  },
+
+  {
+    path: '/survey',
+    component: Layout,
+    redirect: '/survey/diyform',
+    hidden: true,
+    name: 'Survey',
+    meta: {
+      title: '调研模块管理',
+      icon: 'excel'
+    },
+    children: [
+      {
+        path: 'diyform',
+        component: () => import('@/views/survey/diyform'),
+        name: 'Diyform',
+        meta: { title: '调研表单管理', icon: 'list' }
       },
       {
-        path: 'list',
-        component: () => import('@/views/example/list'),
-        name: 'ArticleList',
-        meta: { title: '模板管理', icon: 'list' }
+        path: 'question',
+        component: () => import('@/views/survey/question'),
+        name: 'Question',
+        meta: { title: '表单问题管理', icon: 'edit' }
       }
     ]
   },
