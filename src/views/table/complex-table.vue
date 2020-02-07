@@ -57,6 +57,7 @@
             active-color="#13ce66"
             active-value="0"
             inactive-value="1"
+            @change="switchStatus(row)"
           />
         </template>
       </el-table-column>
@@ -85,18 +86,18 @@
         <el-form-item label="所属部门" prop="team">
           <el-input v-model="temp.team" />
         </el-form-item>
-        <el-form-item label="手机号码" prop="phoneNo">
+        <el-form-item label="手机号码" prop="mobileNum">
           <el-input v-model="temp.mobileNum" />
         </el-form-item>
-        <el-form-item label="邮箱" prop="mail">
+        <el-form-item label="邮箱" prop="emailAddress">
           <el-input v-model="temp.emailAddress" />
         </el-form-item>
-        <el-form-item label="即时启用" prop="mail">
+        <el-form-item label="即时启用" prop="status">
           <el-switch
             v-model="temp.status"
             active-color="#13ce66"
-            active-value="enable"
-            inactive-value="disable"
+            active-value="0"
+            inactive-value="1"
           />
         </el-form-item>
       </el-form>
@@ -155,9 +156,9 @@ export default {
         staffId: undefined,
         name: '',
         team: '',
-        phoneNo: '',
-        mail: '',
-        status: 'disable'
+        mobileNum: '',
+        emailAddress: '',
+        status: '1'
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -170,8 +171,8 @@ export default {
       rules: {
         staffId: [{ required: true, message: '请输入Staff Id', trigger: 'blur' }],
         team: [{ required: true, message: '请输入部门', trigger: 'blur' }],
-        phoneNo: [{ required: true, message: '请输入手机号码', trigger: 'blur' }],
-        mail: [{ required: true, message: '请输入邮箱地址', trigger: 'blur' },
+        mobileNum: [{ required: true, message: '请输入手机号码', trigger: 'blur' }],
+        emailAddress: [{ required: true, message: '请输入邮箱地址', trigger: 'blur' },
           { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }],
         name: [{ required: true, message: '请输入姓名', trigger: 'blur' }]
       },
@@ -185,8 +186,8 @@ export default {
     getList() {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {
-        this.list = response.items
-        this.total = response.total
+        this.list = response.data.content
+        this.total = response.data.totalElements
         this.listLoading = false
       })
     },
@@ -217,17 +218,12 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        notify: {
-          staffId: '',
-          status: '1'
-        },
-        staffList: {
-          staffId: this.temp.notify.staffId,
-          name: '',
-          team: '',
-          emailAddress: '',
-          mobileNum: ''
-        }
+        staffId: '',
+        status: '1',
+        name: '',
+        team: '',
+        emailAddress: '',
+        mobileNum: ''
       }
     },
     handleCreate() {
@@ -243,9 +239,10 @@ export default {
         if (valid) {
           saveNotify(this.temp).then(() => {
             this.dialogFormVisible = false
+            this.getList()
             this.$notify({
               title: 'Success',
-              message: 'Created Successfully',
+              message: '保存成功',
               type: 'success',
               duration: 2000
             })
@@ -254,12 +251,36 @@ export default {
       })
     },
     handleUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
+      this.temp = {
+        staffId: row.notify.staffId,
+        status: row.notify.status,
+        name: '',
+        team: '',
+        emailAddress: row.staffList.emailAddress,
+        mobileNum: row.staffList.mobileNum
+      }
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
+      })
+    },
+    switchStatus(row) {
+      this.temp = {
+        staffId: row.notify.staffId,
+        status: row.notify.status,
+        name: '',
+        team: '',
+        emailAddress: row.staffList.emailAddress,
+        mobileNum: row.staffList.mobileNum
+      }
+      saveNotify(this.temp).then(() => {
+        this.$notify({
+          title: 'Success',
+          message: '操作成功',
+          type: 'success',
+          duration: 2000
+        })
       })
     },
     updateData() {
@@ -268,9 +289,10 @@ export default {
           const tempData = Object.assign({}, this.temp)
           saveNotify(tempData).then(() => {
             this.dialogFormVisible = false
+            this.getList()
             this.$notify({
               title: 'Success',
-              message: 'Update Successfully',
+              message: '操作成功',
               type: 'success',
               duration: 2000
             })
@@ -282,7 +304,7 @@ export default {
       deleteNotify(row.notify.staffId).then(res => {
         this.$notify({
           title: 'Success',
-          message: 'Delete Successfully',
+          message: '删除成功',
           type: 'success',
           duration: 2000
         })
