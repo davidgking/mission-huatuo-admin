@@ -3,10 +3,10 @@
 import Layout from '@/layout'
 
 const tableRouter = {
-  path: '/table',
+  path: '/notify',
   component: Layout,
   redirect: '/table/complex-table',
-  name: 'Table',
+  name: 'notifyStaff',
   meta: {
     title: '信息通知',
     icon: 'table'
@@ -27,17 +27,16 @@ const tableRouter = {
       meta: { title: 'Drag Table' }
     },
     {
-      path: 'inline-edit-table',
-      hidden: true,
-      component: () => import('@/views/table/inline-edit-table'),
-      name: 'InlineEditTable',
-      meta: { title: 'Inline Edit' }
+      path: 'switch',
+      component: () => import('@/views/notify/notifySwitch'),
+      name: 'switch',
+      meta: { title: '通知总开关', icon: 'lock' }
     },
     {
-      path: 'complex-table',
+      path: 'staff',
       component: () => import('@/views/table/complex-table'),
-      name: 'ComplexTable',
-      meta: { title: '被通知人管理' }
+      name: 'staff',
+      meta: { title: '被通知人管理', icon: 'tab' }
     }
   ]
 }
