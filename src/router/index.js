@@ -189,7 +189,6 @@ export const asyncRoutes = [
     path: '/survey',
     component: Layout,
     redirect: '/survey/diyform',
-    hidden: true,
     name: 'Survey',
     meta: {
       title: '调研模块管理',

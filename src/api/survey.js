@@ -16,14 +16,6 @@ export function queList(query) {
   })
 }
 
-export function getDetail(id) {
-  return request({
-    url: '/vue-element-admin/question/detail',
-    method: 'get',
-    params: { id }
-  })
-}
-
 export function deleteQue(data) {
   return request({
     url: '/vue-element-admin/question/delete',
@@ -48,13 +40,39 @@ export function updateQue(data) {
   })
 }
 
+export function deleteDiyform(data) {
+  return request({
+    url: '/vue-element-admin/diyform/delete',
+    method: 'post',
+    data
+  })
+}
+
+export function createDiyform(data) {
+  return request({
+    url: '/vue-element-admin/diyform/create',
+    method: 'post',
+    data
+  })
+}
+
+export function updateDiyform(data) {
+  return request({
+    url: '/vue-element-admin/diyform/update',
+    method: 'post',
+    data
+  })
+}
+
 const Survey = {
   diyList: diyList,
   queList: queList,
-  getDetail: getDetail,
   deleteQue: deleteQue,
   createQue: createQue,
-  updateQue: updateQue
+  updateQue: updateQue,
+  deleteDiyform: deleteDiyform,
+  createDiyform: createDiyform,
+  updateDiyform: updateDiyform
 }
 
 export default Survey

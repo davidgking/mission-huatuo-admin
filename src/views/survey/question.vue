@@ -78,12 +78,15 @@ export default {
       let text
       switch (Number(value)) {
         case 1:
-          text = '简答题'
+          text = '单行输入'
           break
         case 2:
-          text = '单项选择'
+          text = '多行输入'
           break
         case 3:
+          text = '单项选择'
+          break
+        case 4:
           text = '多项选择'
           break
       }
@@ -114,14 +117,17 @@ export default {
         require: ''
       },
       typeList: [{
-        label: '简答题',
+        label: '单行输入',
         value: 1
       }, {
-        label: '单项选择',
+        label: '多行输入',
         value: 2
       }, {
-        label: '多项选择',
+        label: '单项选择',
         value: 3
+      }, {
+        label: '多项选择',
+        value: 4
       }],
       requireList: [{
         label: '是',
