@@ -185,7 +185,7 @@ export default {
         staffId: undefined,
         name: undefined,
         team: undefined,
-        appId: 'wx9812117be87d24d2',
+        appId: this.$store.getters.appId,
         sort: '+id'
       },
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],

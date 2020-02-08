@@ -143,7 +143,7 @@ export default {
         appId: this.$store.getters.appId
       },
       temp: {
-        appId: 'wx9812117be87d24d2',
+        appId: this.$store.getters.appId,
         enable: 'Y',
         smsEnable: 'Y',
         mailEnable: 'Y',
@@ -206,7 +206,7 @@ export default {
         smsEnable: 'N',
         mailEnable: 'N',
         wechatPushEnable: 'N',
-        appId: 'wx9812117be87d24d2',
+        appId: this.$store.getters.appId,
         emailAddress: '',
         mobileNum: ''
       }
