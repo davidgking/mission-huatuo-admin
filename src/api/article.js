@@ -22,3 +22,10 @@ export function deleteNotify(staffId) {
     method: 'get'
   })
 }
+
+export function getStaffInfo(staffId) {
+  return request({
+    url: '/userInfo/getStaff/' + staffId,
+    method: 'get'
+  })
+}

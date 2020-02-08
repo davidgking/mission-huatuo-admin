@@ -101,10 +101,7 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="100px" style="width: 400px; margin-left:50px;">
         <el-form-item label="Staff Id" prop="staffId">
-          <el-input v-model="temp.staffId" />
-        </el-form-item>
-        <el-form-item label="APP Id" prop="appId">
-          <el-input v-model="temp.appId" />
+          <el-input v-model="temp.staffId" @blur="getStaffInfo()" />
         </el-form-item>
         <el-form-item label="开启通知" prop="enable">
           <el-switch
@@ -168,7 +165,7 @@
 </template>
 
 <script>
-import { fetchList, saveNotify, deleteNotify } from '@/api/article'
+import { fetchList, saveNotify, deleteNotify, getStaffInfo } from '@/api/article'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -204,7 +201,7 @@ export default {
         mobileNum: '',
         emailAddress: '',
         status: '1',
-        appId: '',
+        appId: 'wx9812117be87d24d2',
         enable: 'Y',
         smsEnable: 'Y',
         mailEnable: 'Y',
@@ -244,6 +241,21 @@ export default {
       this.listQuery.page = 1
       this.getList()
     },
+    getStaffInfo() {
+      getStaffInfo(this.temp.staffId).then(res => {
+        if (res.message) {
+          this.$message({
+            message: res.message,
+            type: 'warning'
+          })
+          this.temp.mobileNum = ''
+          this.temp.emailAddress = ''
+        } else {
+          this.temp.mobileNum = res.mobileNum
+          this.temp.emailAddress = res.emailAddress
+        }
+      })
+    },
     handleModifyStatus(row, status) {
       this.$message({
         message: '操作Success',
@@ -273,7 +285,7 @@ export default {
         smsEnable: 'N',
         mailEnable: 'N',
         wechatPushEnable: 'N',
-        appId: '',
+        appId: 'wx9812117be87d24d2',
         emailAddress: '',
         mobileNum: ''
       }
@@ -372,8 +384,8 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
+        const tHeader = ['staff Id', '手机号码', '邮箱']
+        const filterVal = ['staffId', 'mobileNum', 'emailAddress']
         const data = this.formatJson(filterVal)
         excel.export_json_to_excel({
           header: tHeader,
