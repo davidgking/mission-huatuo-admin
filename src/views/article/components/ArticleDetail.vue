@@ -6,7 +6,7 @@
         <!-- <CommentDropdown v-model="postForm.comment_disabled" />
         <PlatformDropdown v-model="postForm.platforms" /> -->
         <el-button v-loading="loading" style="margin-left: 10px;" type="success" @click="submitForm">
-          发布
+          直接发布
         </el-button>
         <el-button v-loading="loading" type="warning" @click="draftForm">
           草稿

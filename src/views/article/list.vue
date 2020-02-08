@@ -40,14 +40,15 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="left" label="操作" min-width="120">
+      <el-table-column align="left" label="操作" min-width="200">
         <template slot-scope="scope">
+          <el-button v-if="scope.row.enable === 'N'" type="success" size="mini" style="margin-left:0;" @click="updateState(scope.row, 'Y')">发布</el-button>
           <router-link v-if="scope.row.enable === 'N'" :to="'/article/edit/'+scope.row.id">
-            <el-button type="primary" size="small">编辑</el-button>
+            <el-button type="primary" size="mini">编辑</el-button>
           </router-link>
-          <el-button v-if="scope.row.enable === 'N'" type="danger" size="small" @click="deleteRow(scope.row)">删除</el-button>
-          <el-button v-if="scope.row.enable !== 'N'" type="warning" size="small" @click="openPrew(scope.row)">预览</el-button>
-          <el-button v-if="scope.row.enable !== 'N'" type="info" size="small" style="margin-left:0;" @click="updateState(scope.row)">下架</el-button>
+          <el-button v-if="scope.row.enable === 'N'" type="danger" size="mini" @click="deleteRow(scope.row)">删除</el-button>
+          <el-button v-if="scope.row.enable !== 'N'" type="warning" size="mini" @click="openPrew(scope.row)">预览</el-button>
+          <el-button v-if="scope.row.enable !== 'N'" type="info" size="mini" style="margin-left:0;" @click="updateState(scope.row, 'N')">下架</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -136,14 +137,15 @@ export default {
         })
       })
     },
-    updateState(row) {
+    updateState(row, val) {
       const data = Object.assign({}, row)
-      data.enable = 'N'
+      data.enable = val
       News.updateNews(data).then(response => {
-        row.enable = 'N'
+        row.enable = val
+        const msg = val === 'N' ? '文章已成功下架' : '文章已成功发布'
         this.$notify({
           title: '成功',
-          message: '文章已成功下架',
+          message: msg,
           type: 'success',
           duration: 2000
         })
