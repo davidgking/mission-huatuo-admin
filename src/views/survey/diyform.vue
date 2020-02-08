@@ -44,27 +44,30 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="left" label="操作" width="160">
+      <el-table-column align="left" label="操作" width="200">
         <template slot-scope="{row}">
-          <el-button type="primary" size="small" @click="handleEdit(row)">编辑</el-button>
-          <el-button type="danger" size="small" @click="deleteRow(row)">删除</el-button>
+          <el-button type="warning" size="small" style="margin-left:0;" @click="handlePrew(row)">预览</el-button>
+          <el-button type="primary" size="small" style="margin-left:0;" @click="handleEdit(row)">编辑</el-button>
+          <el-button type="danger" size="small" style="margin-left:0;" @click="deleteRow(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
-    <question-form ref="questionForm" @saveForm="handleSave" />
+    <diyform-form ref="diyformForm" @saveForm="handleSave" />
+    <diyform-prew ref="diyformPrew" />
   </div>
 </template>
 
 <script>
 import Survey from '@/api/survey'
 import Pagination from '@/components/Pagination'
-import QuestionForm from '@/views/survey/components/QuestionForm'
+import DiyformForm from '@/views/survey/components/DiyformForm'
+import DiyformPrew from '@/views/survey/components/DiyformPrew'
 
 export default {
   name: 'Diyform',
-  components: { Pagination, QuestionForm },
+  components: { Pagination, DiyformForm, DiyformPrew },
   filters: {
     typeFilter(value) {
       let text
@@ -105,16 +108,6 @@ export default {
         type: '',
         require: ''
       },
-      typeList: [{
-        label: '简答题',
-        value: 1
-      }, {
-        label: '单项选择',
-        value: 2
-      }, {
-        label: '多项选择',
-        value: 3
-      }],
       statusList: [{
         label: '是',
         value: 1
@@ -157,26 +150,38 @@ export default {
       console.log(1)
     },
     handleAdd() {
-      this.$refs.questionForm.open(1, '', this.typeList, this.requireList)
+      this.$refs.diyformForm.open(1, '', this.statusList)
     },
     handleEdit(row) {
-      this.$refs.questionForm.open(0, row, this.typeList, this.requireList)
+      this.$refs.diyformForm.open(0, row, this.statusList)
     },
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
+    },
+    handlePrew(row) {
+      this.$refs.diyformPrew.open(row)
     }
   }
 }
 </script>
 
-<style scoped>
-.edit-input {
-  padding-right: 100px;
-}
-.cancel-btn {
-  position: absolute;
-  right: 15px;
-  top: 10px;
+<style lang="scss">
+
+.new-prew-content {
+  font-size: 16px;
+  line-height: 1.2;
+  margin: 0 20px;
+  .prew-title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 900;
+    margin: 10px;
+  }
+  .half-box {
+    display: inline-block;
+    width: 48%;
+    padding: 10px 30px;
+  }
 }
 </style>

@@ -37,7 +37,7 @@ for (let i = 0; i < 10; i++) {
     title: '@title(5, 10)',
     answer: 'mock data',
     content: 'baseContent',
-    type: '@integer(1, 3)',
+    type: '@integer(1, 4)',
     require: '@integer(0, 1)'
   }
   Question.push(Mock.mock(item))
@@ -165,6 +165,26 @@ export default [
     }
   },
   {
+    url: '/vue-element-admin/question/create',
+    type: 'post',
+    response: _ => {
+      return {
+        code: 20000,
+        data: 'success'
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/question/update',
+    type: 'post',
+    response: _ => {
+      return {
+        code: 20000,
+        data: 'success'
+      }
+    }
+  },
+  {
     url: '/vue-element-admin/question/delete',
     type: 'post',
     response: _ => {
@@ -198,6 +218,26 @@ export default [
           total: mockList.length,
           items: pageList
         }
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/diyform/create',
+    type: 'post',
+    response: _ => {
+      return {
+        code: 20000,
+        data: 'success'
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/diyform/update',
+    type: 'post',
+    response: _ => {
+      return {
+        code: 20000,
+        data: 'success'
       }
     }
   },
