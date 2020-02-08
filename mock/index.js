@@ -13,7 +13,7 @@ const mocks = [
   ...role,
   // ...article,
   ...search,
-  ...vpnInfo,
+  // ...vpnInfo,
   ...testBao
 ]
 
