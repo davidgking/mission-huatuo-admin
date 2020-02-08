@@ -134,6 +134,18 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/health',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/health/index'),
+        name: 'health',
+        meta: { title: '健康问题报告', icon: 'people', noCache: true }
+      }
+    ]
+  },
+  {
     path: '/icon',
     component: Layout,
     hidden: true,
@@ -200,6 +212,7 @@ export const asyncRoutes = [
     path: '/survey',
     component: Layout,
     redirect: '/survey/diyform',
+    hidden: true,
     name: 'Survey',
     meta: {
       title: '调研模块管理',
