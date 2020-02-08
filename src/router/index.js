@@ -184,7 +184,18 @@ export const asyncRoutes = [
       }
     ]
   },
-
+  {
+    path: '/unbind',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/unbind/index'),
+        name: 'unbind',
+        meta: { title: '解绑', icon: 'edit', noCache: true }
+      }
+    ]
+  },
   {
     path: '/survey',
     component: Layout,
