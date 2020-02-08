@@ -14,54 +14,30 @@
           <span>{{ row.appId }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="开启通知" align="center">
+      <el-table-column label="Staff Id" width="110px" align="center">
         <template slot-scope="{row}">
-          <el-switch
-            v-model="row.enable"
-            active-color="#13ce66"
-            active-value="Y"
-            inactive-value="N"
-            @change="switchStatus(row)"
-          />
+          <span>{{ row.staffId }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="短信通知" align="center">
+      <el-table-column label="手机号码" width="150px" align="center">
         <template slot-scope="{row}">
-          <el-switch
-            v-model="row.smsEnable"
-            active-color="#13ce66"
-            active-value="Y"
-            inactive-value="N"
-            @change="switchStatus(row)"
-          />
+          <span>{{ row.mobileNum }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="邮件通知" align="center">
+      <el-table-column label="Open Id" align="center">
         <template slot-scope="{row}">
-          <el-switch
-            v-model="row.mailEnable"
-            active-color="#13ce66"
-            active-value="Y"
-            inactive-value="N"
-            @change="switchStatus(row)"
-          />
+          <span>{{ row.openId }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="微信推送" align="center">
+      <el-table-column label="其他" align="center">
         <template slot-scope="{row}">
-          <el-switch
-            v-model="row.wechatPushEnable"
-            active-color="#13ce66"
-            active-value="Y"
-            inactive-value="N"
-            @change="switchStatus(row)"
-          />
+          <span>{{ row.other }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="130" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button size="mini" type="danger" @click="handleDelete(row)">
-            删除
+            解绑
           </el-button>
         </template>
       </el-table-column>
@@ -70,11 +46,11 @@
 </template>
 
 <script>
-import { fetchList, deleteNotify, saveNotify } from '@/api/notifySwitch'
+import { fetchList, unbind } from '@/api/unbind'
 import waves from '@/directive/waves' // waves directive
 
 export default {
-  name: 'NotifySwitch',
+  name: 'Unbind',
   components: { },
   directives: { waves },
   filters: { },
@@ -87,22 +63,6 @@ export default {
       listQuery: {
         page: 1,
         limit: 20
-      },
-      temp: {
-        appId: 'wx9812117be87d24d2',
-        enable: 'Y',
-        smsEnable: 'Y',
-        mailEnable: 'Y',
-        wechatPushEnable: 'Y'
-      },
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: '编辑',
-        create: '新建'
-      },
-      rules: {
-        appId: [{ required: true, message: '请输入Staff Id', trigger: 'blur' }]
       }
     }
   },
@@ -117,23 +77,13 @@ export default {
         this.listLoading = false
       })
     },
-    switchStatus(row) {
-      saveNotify(row).then(() => {
-        this.$notify({
-          title: 'Success',
-          message: '操作成功',
-          type: 'success',
-          duration: 2000
-        })
-      })
-    },
     handleDelete(row) {
-      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+      this.$confirm('此操作将永久解绑该记录, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteNotify(row.appId).then(res => {
+        unbind(row.appId, row.staffId).then(res => {
           this.$notify({
             title: 'Success',
             message: '删除成功',
@@ -142,43 +92,6 @@ export default {
           })
           this.getList()
         })
-      })
-    },
-    resetTemp() {
-      this.temp = {
-        staffId: '',
-        status: '1',
-        enable: 'N',
-        smsEnable: 'N',
-        mailEnable: 'N',
-        wechatPushEnable: 'N',
-        appId: 'wx9812117be87d24d2',
-        emailAddress: '',
-        mobileNum: ''
-      }
-    },
-    handleCreate() {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    createData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          saveNotify(this.temp).then(() => {
-            this.dialogFormVisible = false
-            this.getList()
-            this.$notify({
-              title: 'Success',
-              message: '保存成功',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
       })
     }
   }
