@@ -24,7 +24,7 @@
           <span>{{ row.mobileNum }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Open Id" align="center">
+      <el-table-column label="Open Id" width="300px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.openId }}</span>
         </template>
@@ -62,7 +62,8 @@ export default {
       listLoading: true,
       listQuery: {
         page: 1,
-        limit: 20
+        limit: 20,
+        appId: this.$store.getters.appId
       }
     }
   },
@@ -72,7 +73,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      fetchList().then(response => {
+      fetchList(this.listQuery).then(response => {
         this.list = response.items
         this.listLoading = false
       })

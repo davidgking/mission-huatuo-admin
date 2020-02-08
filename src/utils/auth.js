@@ -13,3 +13,17 @@ export function setToken(token) {
 export function removeToken() {
   return Cookies.remove(TokenKey)
 }
+
+const appKey = 'APP-ID-KEY'
+
+export function getAppId() {
+  return Cookies.get(appKey)
+}
+
+export function setAppId(token) {
+  return Cookies.set(appKey, token)
+}
+
+export function removeAppId() {
+  return Cookies.remove(appKey)
+}

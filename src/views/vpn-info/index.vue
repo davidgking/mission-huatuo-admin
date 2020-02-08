@@ -153,6 +153,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
+        appId: this.$store.getters.appId,
         staffId: undefined,
         location: undefined,
         internetISP: undefined,

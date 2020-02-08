@@ -2,8 +2,6 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input v-model="listQuery.staffId" placeholder="Staff Id" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.name" placeholder="姓名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.team" placeholder="所属部门" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" size="small" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
@@ -201,7 +199,7 @@ export default {
         mobileNum: '',
         emailAddress: '',
         status: '1',
-        appId: 'wx9812117be87d24d2',
+        appId: this.$store.getters.appId,
         enable: 'Y',
         smsEnable: 'Y',
         mailEnable: 'Y',
@@ -242,19 +240,22 @@ export default {
       this.getList()
     },
     getStaffInfo() {
-      getStaffInfo(this.temp.staffId).then(res => {
-        if (res.message) {
-          this.$message({
-            message: res.message,
-            type: 'warning'
-          })
-          this.temp.mobileNum = ''
-          this.temp.emailAddress = ''
-        } else {
-          this.temp.mobileNum = res.mobileNum
-          this.temp.emailAddress = res.emailAddress
-        }
-      })
+      const staffId = this.temp.staffId
+      if (staffId !== '') {
+        getStaffInfo(staffId).then(res => {
+          if (res.message) {
+            this.$message({
+              message: res.message,
+              type: 'warning'
+            })
+            this.temp.mobileNum = ''
+            this.temp.emailAddress = ''
+          } else {
+            this.temp.mobileNum = res.mobileNum
+            this.temp.emailAddress = res.emailAddress
+          }
+        })
+      }
     },
     handleModifyStatus(row, status) {
       this.$message({
@@ -285,7 +286,7 @@ export default {
         smsEnable: 'N',
         mailEnable: 'N',
         wechatPushEnable: 'N',
-        appId: 'wx9812117be87d24d2',
+        appId: this.$store.getters.appId,
         emailAddress: '',
         mobileNum: ''
       }

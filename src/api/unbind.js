@@ -1,9 +1,10 @@
 import request from '@/utils/request'
 
-export function fetchList() {
+export function fetchList(data) {
   return request({
     url: '/userInfo/fecthList',
-    method: 'get'
+    method: 'get',
+    params: data
   })
 }
 

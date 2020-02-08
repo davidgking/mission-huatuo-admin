@@ -139,7 +139,8 @@ export default {
       listLoading: true,
       listQuery: {
         page: 1,
-        limit: 20
+        limit: 20,
+        appId: this.$store.getters.appId
       },
       temp: {
         appId: 'wx9812117be87d24d2',
@@ -165,7 +166,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      fetchList().then(response => {
+      fetchList(this.listQuery).then(response => {
         this.list = response.items
         this.listLoading = false
       })
