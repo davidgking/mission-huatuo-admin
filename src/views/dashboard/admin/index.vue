@@ -1,7 +1,7 @@
 <template>
-  <div class="dashboard-editor-container">
+  <div class="dashboard">
 
-    <panel-group @handleSetLineChartData="handleSetLineChartData" />
+    <!-- <panel-group @handleSetLineChartData="handleSetLineChartData" />
 
     <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
       <line-chart :chart-data="lineChartData" />
@@ -23,16 +23,23 @@
           <bar-chart />
         </div>
       </el-col>
-    </el-row>
+    </el-row> -->
+    <div class="des">
+      <img src="@/assets/images/huatuo_logo.png" width="60" height="60">
+      <div class="des-title">
+        <h3>HuaTuo-Admin</h3>
+        <h3>华佗健康管理平台</h3>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import PanelGroup from './components/PanelGroup'
-import LineChart from './components/LineChart'
-import RaddarChart from './components/RaddarChart'
-import PieChart from './components/PieChart'
-import BarChart from './components/BarChart'
+// import PanelGroup from './components/PanelGroup'
+// import LineChart from './components/LineChart'
+// import RaddarChart from './components/RaddarChart'
+// import PieChart from './components/PieChart'
+// import BarChart from './components/BarChart'
 
 const lineChartData = {
   newVisitis: {
@@ -55,13 +62,13 @@ const lineChartData = {
 
 export default {
   name: 'DashboardAdmin',
-  components: {
-    PanelGroup,
-    LineChart,
-    RaddarChart,
-    PieChart,
-    BarChart
-  },
+  // components: {
+  //   PanelGroup,
+  //   LineChart,
+  //   RaddarChart,
+  //   PieChart,
+  //   BarChart
+  // },
   data() {
     return {
       lineChartData: lineChartData.newVisitis
@@ -92,6 +99,23 @@ export default {
     background: #fff;
     padding: 16px 16px 0;
     margin-bottom: 32px;
+  }
+}
+
+.dashboard {
+  .des {
+    padding: 40px;
+    .des-title {
+      display: inline-block;
+      margin: 0 20px;
+    }
+    ul {
+      margin-top: 20px;
+      li {
+        line-height: 40px;
+        font-family: "Hiragino Sans GB";
+      }
+    }
   }
 }
 
