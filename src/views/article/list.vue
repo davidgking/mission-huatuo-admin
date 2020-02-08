@@ -102,7 +102,8 @@ export default {
       listLoading: true,
       listQuery: {
         page: 1,
-        limit: 20
+        limit: 20,
+        appId: this.$store.getters.appId
       },
       prewData: {},
       PrewVisible: false
