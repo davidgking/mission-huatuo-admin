@@ -1,14 +1,15 @@
 import request from '@/utils/request'
 
-const getHealth = function() {
+const fetchList = function(query) {
   return request({
-    url: '/api/health',
-    method: 'get'
+    url: '/healthHacn/fetchList',
+    method: 'get',
+    params: query
   })
 }
 
 const Health = {
-  getHealth: getHealth
+  fetchList: fetchList
 }
 
 export default Health

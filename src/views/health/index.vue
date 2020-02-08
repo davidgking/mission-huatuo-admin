@@ -3,14 +3,10 @@
     <div class="filter-container">
       <el-input v-model="listQuery.staffId" placeholder="Staff Id" style="width: 160px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.cityName" placeholder="所在城市" style="width: 160px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.healthStatus" placeholder="健康状态" clearable style="width: 210px" class="filter-item">
-        <el-option label="中国电信 China Telecom" value="1" />
-        <el-option label="中国移动 China Mobile" value="2" />
-        <el-option label="中国联通 China Unicom" value="3" />
-        <el-option label="不知道 Don't Know" value="4" />
-        <el-option label="其它 Others" value="5" />
+      <el-select v-model="listQuery.healthStatus" placeholder="健康状态" clearable style="width: 230px" class="filter-item">
+        <el-option v-for="item in healthSatusList" :key="item.value" :label="item.name" :value="item.value" />
       </el-select>
-      <el-date-picker v-model="listQuery.lastUpatetime" type="date" value-format="yyyy-MM-dd" placeholder="上次更新时间" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-date-picker v-model="listQuery.lastUpatetime" type="date" value-format="yyyy-MM-dd" placeholder="报告时间" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" size="small" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
@@ -58,14 +54,14 @@
           <span>{{ row.department }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="被报告同事14天内去过的办公行所" width="140px" align="center">
+      <!-- <el-table-column label="被报告同事14天内去过的办公行所" width="140px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.workPlace }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="被报告同事目前健康状态" width="220px" align="center" show-overflow-tooltip>
         <template slot-scope="{row}">
-          <span>{{ row.healthStatus }}</span>
+          <span>{{ row.status }}</span>
         </template>
       </el-table-column>
       <el-table-column label="被报告同事是否已经隔离" width="160px" align="center">
@@ -100,15 +96,41 @@
 </template>
 
 <script>
-import { fetchList } from '@/api/vpnInfo'
+import Health from '@/api/health'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 // import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 export default {
-  name: 'VpnInfo',
+  name: 'HealthInfo',
   components: { },
   directives: { waves },
+  filters: {
+    statusFilter(status) {
+      let text
+      switch (Number(status)) {
+        case 1:
+          text = '由医疗机构或者疾控部门告知的确诊病毒性肺炎案例'
+          break
+        case 2:
+          text = '由医疗机构或者疾控部门告知的疑似病毒性肺炎案例'
+          break
+        case 3:
+          text = '由医疗机构或者疾控部门告知的密切接触'
+          break
+        case 4:
+          text = '有发烧但不是肺炎'
+          break
+        case 5:
+          text = '没有发烧，但有其它身体不适的情况（请提供具体的症状）'
+          break
+        case 6:
+          text = '居住楼或小区被有关部门限制出入'
+          break
+      }
+      return text
+    }
+  },
   data() {
     return {
       tableKey: 0,
@@ -123,7 +145,26 @@ export default {
         healthStatus: undefined,
         lastUpatetime: undefined
       },
-      downloadLoading: false
+      downloadLoading: false,
+      healthSatusList: [{
+        value: 1,
+        name: '由医疗机构或者疾控部门告知的确诊病毒性肺炎案例'
+      }, {
+        value: 2,
+        name: '由医疗机构或者疾控部门告知的疑似病毒性肺炎案例'
+      }, {
+        value: 3,
+        name: '由医疗机构或者疾控部门告知的密切接触'
+      }, {
+        value: 4,
+        name: '有发烧但不是肺炎'
+      }, {
+        value: 5,
+        name: '没有发烧，但有其它身体不适的情况（请提供具体的症状）'
+      }, {
+        value: 6,
+        name: '居住楼或小区被有关部门限制出入'
+      }]
     }
   },
   created() {
@@ -132,9 +173,18 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      fetchList(this.listQuery).then(response => {
-        console.log(response.data)
-        this.list = response.items
+      Health.fetchList(this.listQuery).then(response => {
+        const list = []
+        response.items.forEach((item) => {
+          if (item) {
+            const f = this.healthSatusList.find(f => Number(item.healthStatus) === f.value)
+            if (f) {
+              item.status = f.name
+            }
+            list.push(item)
+          }
+        })
+        this.list = list
         this.total = response.total
         // Just to simulate the time of the request
         this.listLoading = false
@@ -156,11 +206,11 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['员工编号', '中文姓名', '紧急联系电话', '是否为其他同事报告', '被报告同事办公城市', '被报告同事部门', '被报告同事14天内去过的办公行所',
+        const tHeader = ['员工编号', '中文姓名', '紧急联系电话', '是否为其他同事报告', '被报告同事办公城市', '被报告同事部门',
           '被报告同事目前健康状态', '被报告同事是否已经隔离', '被报告同事隔离情况', '隔离起始日期', '隔离结束日期',
           '报告时间']
-        const filterVal = ['staffId', 'staffName', 'mobileNum', 'isReportOther', 'cityName', 'department', 'workPlace',
-          'healthStatus', 'isIsolation', 'isoType', 'startDate', 'endDate', 'reportDate']
+        const filterVal = ['staffId', 'staffName', 'mobileNum', 'isReportOther', 'cityName', 'department',
+          'status', 'isIsolation', 'isoType', 'startDate', 'endDate', 'reportDate']
         const data = this.formatJson(filterVal)
         excel.export_json_to_excel({
           header: tHeader,

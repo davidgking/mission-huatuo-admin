@@ -136,7 +136,7 @@ export default {
     }
     return {
       id: null,
-      postForm: Object.assign({}, defaultForm),
+      postForm: Object.assign({ appId: this.$store.getters.appId }, defaultForm),
       loading: false,
       userListOptions: [],
       rules: {
