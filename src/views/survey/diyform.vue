@@ -46,7 +46,7 @@
 
       <el-table-column align="left" label="操作" width="200">
         <template slot-scope="{row}">
-          <el-button type="warning" size="small" style="margin-left:0;">预览</el-button>
+          <el-button type="warning" size="small" style="margin-left:0;" @click="handlePrew(row)">预览</el-button>
           <el-button type="primary" size="small" style="margin-left:0;" @click="handleEdit(row)">编辑</el-button>
           <el-button type="danger" size="small" style="margin-left:0;" @click="deleteRow(row)">删除</el-button>
         </template>
@@ -55,6 +55,7 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
     <diyform-form ref="diyformForm" @saveForm="handleSave" />
+    <diyform-prew ref="diyformPrew" />
   </div>
 </template>
 
@@ -62,10 +63,11 @@
 import Survey from '@/api/survey'
 import Pagination from '@/components/Pagination'
 import DiyformForm from '@/views/survey/components/DiyformForm'
+import DiyformPrew from '@/views/survey/components/DiyformPrew'
 
 export default {
   name: 'Diyform',
-  components: { Pagination, DiyformForm },
+  components: { Pagination, DiyformForm, DiyformPrew },
   filters: {
     typeFilter(value) {
       let text
@@ -156,6 +158,9 @@ export default {
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
+    },
+    handlePrew(row) {
+      this.$refs.diyformPrew.open(row)
     }
   }
 }

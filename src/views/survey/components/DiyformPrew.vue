@@ -38,24 +38,6 @@ export default {
           break
       }
       return text
-    },
-    tagFilter(value) {
-      let text
-      switch (Number(value)) {
-        case 1:
-          text = 'primary'
-          break
-        case 2:
-          text = 'warning'
-          break
-        case 3:
-          text = 'success'
-          break
-        case 4:
-          text = 'danger'
-          break
-      }
-      return text
     }
   },
   data() {
@@ -78,7 +60,7 @@ export default {
     }
   },
   methods: {
-    open(formType, diyformData, statusList) {
+    open(diyformData, statusList) {
       this.getQuestionList()
       this.dialogVisible = true
     },
@@ -89,12 +71,6 @@ export default {
     getQuestionList() {
       Survey.queList(this.listQuery).then(response => {
         this.questionList = response.data.items
-        // test logic
-        if (!this.formType) {
-          const questionList = this.questionList
-          this.selectList.push(questionList[3])
-          this.selectList.push(questionList[2])
-        }
       })
     }
   }
