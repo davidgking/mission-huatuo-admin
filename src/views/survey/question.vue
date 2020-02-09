@@ -40,11 +40,11 @@
         </template>
       </el-table-column>
 
-      <el-table-column min-width="100px" align="center" label="答案">
+      <!-- <el-table-column min-width="100px" align="center" label="答案">
         <template slot-scope="{row}">
           <span>{{ row.answer }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
       <el-table-column label="备注">
         <template slot-scope="{row}">

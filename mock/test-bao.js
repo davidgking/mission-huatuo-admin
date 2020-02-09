@@ -1,4 +1,5 @@
 import Mock from 'mockjs'
+import DataMock from './QuestionDataMock'
 
 const List = []
 const Question = []
@@ -155,13 +156,7 @@ export default [
 
       const pageList = mockList.filter((item, index) => index < limit * page && index >= limit * (page - 1))
 
-      return {
-        code: 20000,
-        data: {
-          total: mockList.length,
-          items: pageList
-        }
-      }
+      return DataMock
     }
   },
   {

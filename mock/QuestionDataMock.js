@@ -64,7 +64,7 @@ const data = {
         value: 2,
         name: '办公室'
       }, {
-        value: 2,
+        value: 3,
         name: '肯德基'
       }],
       'content': 'baseContent',

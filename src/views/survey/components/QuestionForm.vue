@@ -98,13 +98,10 @@ export default {
       this.formType = formType
       if (queData) {
         this.queData = Object.assign({}, queData)
-        this.selectList = [{
-          name: 'mock data1',
-          value: 1
-        }, {
-          name: 'mock data2',
-          value: 2
-        }]
+        if (queData.answer && (queData.answer instanceof Array)) {
+          const array = []
+          this.selectList = array.concat(queData.answer)
+        }
       }
       this.dialogVisible = true
       this.typeList = typeList
