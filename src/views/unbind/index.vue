@@ -1,5 +1,11 @@
 <template>
   <div class="app-container">
+    <div class="filter-container">
+      <el-input v-model="listQuery.staffId" placeholder="Staff Id" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-button v-waves class="filter-item" size="small" type="primary" icon="el-icon-search" @click="getList">
+        查询
+      </el-button>
+    </div>
     <el-table
       :key="tableKey"
       v-loading="listLoading"
