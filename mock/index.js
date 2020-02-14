@@ -9,11 +9,11 @@ import vpnInfo from './vpnInfo'
 import testBao from './test-bao'
 
 const mocks = [
-  // ...user,
+  ...user,
   ...role,
   // ...article,
   ...search,
-  // ...vpnInfo,
+  ...vpnInfo,
   ...testBao
 ]
 

@@ -165,8 +165,12 @@ export default {
         // test logic
         if (!this.formType) {
           const questionList = this.questionList
-          this.selectList.push(questionList[3])
-          this.selectList.push(questionList[2])
+          this.diyformData.questionData.forEach((item) => {
+            const f = questionList.find(f => f.id === item)
+            if (f) {
+              this.selectList.push(f)
+            }
+          })
         }
       })
     },
@@ -224,6 +228,7 @@ export default {
                 duration: 2000
               })
               this.cancel()
+              this.$emit('saveForm', param)
             } else {
               this.$message.error(response.msg)
             }
@@ -264,7 +269,10 @@ export default {
     checkQuestionData() {
       if (this.selectList.length) {
         const array = []
-        this.diyformData.questionData = array.concat(this.selectList)
+        this.selectList.forEach((item) => {
+          array.push(item.id)
+        })
+        this.diyformData.questionData = array
       }
     }
   }

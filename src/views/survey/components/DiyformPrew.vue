@@ -61,9 +61,7 @@ export default {
   methods: {
     open(diyformData) {
       // test logic
-      this.prewData = Object.assign({
-        questionData: [101, 102, 103, 104, 105, 106]
-      }, diyformData)
+      this.prewData = Object.assign({}, diyformData)
       this.getQuestionList()
       this.dialogVisible = true
     },

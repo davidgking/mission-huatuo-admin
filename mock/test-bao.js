@@ -50,6 +50,7 @@ for (let i = 0; i < 10; i++) {
     formName: '@title(5, 8)',
     datetime: '@datetime',
     published: '@integer(0, 1)',
+    questionData: [101, 102, 103, 104, 105, 106],
     remark: 'test'
   }
   Diyform.push(Mock.mock(item))

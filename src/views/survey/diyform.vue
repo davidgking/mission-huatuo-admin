@@ -146,8 +146,14 @@ export default {
         })
       })
     },
-    handleSave() {
-      console.log(1)
+    handleSave(data) {
+      const id = data.id
+      const f = this.list.find(f => f.id === id)
+      if (f) {
+        for (const i in f) {
+          f[i] = data[i]
+        }
+      }
     },
     handleAdd() {
       this.$refs.diyformForm.open(1, '', this.statusList)

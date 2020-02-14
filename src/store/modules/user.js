@@ -1,5 +1,5 @@
-import { logout, getInfo, login } from '@/api/user'
-import { getToken, setToken, removeToken, getAppId, setAppId, removeAppId } from '@/utils/auth'
+import { logout, getInfo } from '@/api/user'
+import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
 const state = {
@@ -7,7 +7,6 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
-  appId: getAppId(),
   roles: []
 }
 
@@ -26,9 +25,6 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
-  },
-  SET_APP_ID: (state, appId) => {
-    state.appId = appId
   }
 }
 
@@ -36,15 +32,12 @@ const actions = {
   // user login
   login({ commit }, userInfo) {
     return new Promise((resolve, reject) => {
-      login(userInfo).then(res => {
-        commit('SET_TOKEN', res.token)
-        commit('SET_APP_ID', res.appId)
-        setToken(res.token)
-        setAppId(res.appId)
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
+      const data = {
+        token: 'admin-token'
+      }
+      commit('SET_TOKEN', data.token)
+      setToken(data.token)
+      resolve()
     })
   },
 
@@ -52,16 +45,24 @@ const actions = {
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
-        if (response.message) {
-          reject(response.msg)
+        const { data } = response
+
+        if (!data) {
+          reject('Verification failed, please Login again.')
         }
-        const { roles, name, avatar, introduction } = response
+
+        const { roles, name, avatar, introduction } = data
+
+        // roles must be a non-empty array
+        if (!roles || roles.length <= 0) {
+          reject('getInfo: roles must be a non-null array!')
+        }
 
         commit('SET_ROLES', roles)
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
         commit('SET_INTRODUCTION', introduction)
-        resolve(response)
+        resolve(data)
       }).catch(error => {
         reject(error)
       })
@@ -73,10 +74,8 @@ const actions = {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
         commit('SET_TOKEN', '')
-        commit('SET_APP_ID', '')
         commit('SET_ROLES', [])
         removeToken()
-        removeAppId()
         resetRouter()
 
         // reset visited views and cached views
@@ -94,10 +93,8 @@ const actions = {
   resetToken({ commit }) {
     return new Promise(resolve => {
       commit('SET_TOKEN', '')
-      commit('SET_APP_ID', '')
       commit('SET_ROLES', [])
       removeToken()
-      removeAppId()
       resolve()
     })
   },
