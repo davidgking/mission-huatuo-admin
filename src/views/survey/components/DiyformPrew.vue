@@ -5,18 +5,18 @@
         <span>预览</span>
       </div>
       <div class="new-prew-content">
-        <div class="prew-title">{{ prewData.formName }}</div>
+        <div class="prew-title">{{ prewData.formNameCn + ' ' + prewData.formNameEn }}</div>
         <div>
           <div v-for="item in questionList" :key="item.id" class="question-select-item">
-            <span>{{ item.title }}</span>
+            <span>{{ item.questionTitleCn + ' ' + item.questionTitleEn }}</span>
             <div>
-              <el-input v-if="item.type === 1" class="item-content" />
-              <el-input v-if="item.type === 2" class="item-content" type="textarea" :rows="4" />
-              <el-radio-group v-if="item.type === 3" class="item-content">
-                <el-radio v-for="answer in item.answer" :key="answer.value" :label="answer.value">{{ answer.name }}</el-radio>
+              <el-input v-if="item.questionType === 3" class="item-content" />
+              <el-input v-if="item.questionType === 4" class="item-content" type="textarea" :rows="4" />
+              <el-radio-group v-if="item.questionType === 1" class="item-content">
+                <el-radio v-for="(answer,index) in item.questionItems" :key="index" :label="index">{{ answer.itemTextCn + ' ' + answer.itemTextEn }}</el-radio>
               </el-radio-group>
-              <el-checkbox-group v-if="item.type === 4" v-model="checkList" class="item-content">
-                <el-checkbox v-for="answer in item.answer" :key="answer.value" :label="answer.name" />
+              <el-checkbox-group v-if="item.questionType === 2" v-model="checkList" class="item-content">
+                <el-checkbox v-for="(answer,index) in item.questionItems" :key="index" :label="answer.itemTextCn + ' ' + answer.itemTextEn" />
               </el-checkbox-group>
             </div>
           </div>
@@ -27,7 +27,7 @@
 </template>
 <script>
 
-import Survey from '@/api/survey'
+// import Survey from '@/api/survey'
 export default {
   name: 'DiyformPrew',
   filters: {
@@ -62,6 +62,25 @@ export default {
     open(diyformData) {
       // test logic
       this.prewData = Object.assign({}, diyformData)
+      this.prewData.questions = [{
+        questionNo: 101,
+        questionType: 1,
+        questionTitleCn: '你两周内有到过湖北吗',
+        questionTitleEn: 'Have yuo went to Hubei between 2 weeks',
+        questionItems: [{
+          itemTextCn: '是',
+          itemTextEn: 'Yes'
+        }, {
+          itemTextCn: '否',
+          itemTextEn: 'No'
+        }]
+      }, {
+        questionNo: 106,
+        questionType: 4,
+        questionTitleCn: '请对我们的服务提出建议',
+        questionTitleEn: 'Some suggestions',
+        questionItems: ''
+      }]
       this.getQuestionList()
       this.dialogVisible = true
     },
@@ -70,18 +89,14 @@ export default {
       this.questionList = []
     },
     getQuestionList() {
-      Survey.queList(this.listQuery).then(response => {
-        const questionList = response.data.items
-        const questions = this.prewData.questionData
-        const list = []
-        if (questions.length) {
-          questions.forEach((item) => {
-            const f = questionList.find(f => f.id === Number(item))
-            list.push(f)
-          })
-        }
-        this.questionList = list
-      })
+      const questions = this.prewData.questions
+      const list = []
+      if (questions.length) {
+        questions.forEach((item) => {
+          list.push(item)
+        })
+      }
+      this.questionList = list
     }
   }
 }

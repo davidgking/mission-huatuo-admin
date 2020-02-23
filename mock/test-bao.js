@@ -47,11 +47,12 @@ for (let i = 0; i < 10; i++) {
 for (let i = 0; i < 10; i++) {
   let item = {
     id: '@increment',
-    formName: '@title(5, 8)',
+    formNameCn: '测试数据',
+    formNameEn: '@title(5, 8)',
     datetime: '@datetime',
-    published: '@integer(0, 1)',
     questionData: [101, 102, 103, 104, 105, 106],
-    remark: 'test'
+    formDescriptionCn: 'test',
+    formDescriptionEn: 'english'
   }
   Diyform.push(Mock.mock(item))
 }
@@ -239,6 +240,16 @@ export default [
   },
   {
     url: '/vue-element-admin/diyform/delete',
+    type: 'post',
+    response: _ => {
+      return {
+        code: 20000,
+        data: 'success'
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/diyform/query',
     type: 'post',
     response: _ => {
       return {

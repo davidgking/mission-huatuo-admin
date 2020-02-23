@@ -211,7 +211,7 @@ export const asyncRoutes = [
   {
     path: '/survey',
     component: Layout,
-    redirect: '/survey/diyform',
+    redirect: '/survey/list',
     // hidden: true,
     name: 'Survey',
     meta: {
@@ -220,16 +220,23 @@ export const asyncRoutes = [
     },
     children: [
       {
-        path: 'diyform',
-        component: () => import('@/views/survey/diyform'),
-        name: 'Diyform',
-        meta: { title: '调研表单管理', icon: 'list' }
+        path: 'list',
+        component: () => import('@/views/survey/list'),
+        name: 'SurveyList',
+        meta: { title: '调研表管理', icon: 'list' }
       },
       {
-        path: 'question',
-        component: () => import('@/views/survey/question'),
-        name: 'Question',
-        meta: { title: '表单问题管理', icon: 'edit' }
+        path: 'create',
+        component: () => import('@/views/survey/create'),
+        name: 'CreateSurvey',
+        meta: { title: '创建调研表', icon: 'edit' }
+      },
+      {
+        path: 'edit/:id(\\d+)',
+        component: () => import('@/views/survey/edit'),
+        name: 'EditSurvey',
+        meta: { title: '编辑调研表', noCache: true, activeMenu: '/survey/list' },
+        hidden: true
       }
     ]
   },

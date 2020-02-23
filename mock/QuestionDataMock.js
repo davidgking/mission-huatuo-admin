@@ -6,75 +6,75 @@ const data = {
       'id': 101,
       'title': '请输入你的姓名',
       'answer': 'mock data',
-      'content': 'baseContent',
+      'enTitle': 'Please write your name',
       'type': 1,
       'require': 1
     }, {
       'id': 102,
       'title': '你两周内有到过湖北吗',
       'answer': [{
-        value: 1,
+        enName: 'Yes',
         name: '是'
       }, {
-        value: 0,
+        enName: 'No',
         name: '否'
       }],
-      'content': 'baseContent',
+      'enTitle': 'Have yuo went to Hubei between 2 weeks',
       'type': 3,
       'require': 1
     }, {
       'id': 103,
       'title': '你两周之外有到过湖北吗',
       'answer': [{
-        value: 1,
+        enName: 'Yes',
         name: '是'
       }, {
-        value: 0,
+        enName: 'No',
         name: '否'
       }],
-      'content': 'baseContent',
+      'enTitle': 'Have yuo went to Hubei before 2 weeks',
       'type': 3,
       'require': 1
     }, {
       'id': 104,
       'title': '你有以下哪几种症状',
       'answer': [{
-        value: 1,
+        enName: 'Fashao',
         name: '发烧'
       }, {
-        value: 2,
+        enName: 'Kesou',
         name: '咳嗽'
       }, {
-        value: 3,
+        enName: 'Touyun',
         name: '头晕'
       }, {
-        value: 4,
+        enName: 'Outu',
         name: '呕吐'
       }],
-      'content': 'baseContent',
+      'enTitle': 'Which problem',
       'type': 4,
       'require': 1
     }, {
       'id': 105,
       'title': '你将要选择哪一种办公方式',
       'answer': [{
-        value: 1,
+        enName: 'At home',
         name: '在家办公'
       }, {
-        value: 2,
+        enName: 'At office',
         name: '办公室'
       }, {
-        value: 3,
+        enName: 'At KFC',
         name: '肯德基'
       }],
-      'content': 'baseContent',
+      'enTitle': 'Which place do you select',
       'type': 3,
       'require': 1
     }, {
       'id': 106,
       'title': '请对我们的服务提出建议',
       'answer': 'mock data',
-      'content': 'baseContent',
+      'enTitle': 'Some suggestions',
       'type': 2,
       'require': 0
     }]

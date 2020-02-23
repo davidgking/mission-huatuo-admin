@@ -64,6 +64,14 @@ export function updateDiyform(data) {
   })
 }
 
+export function queryDiyform(data) {
+  return request({
+    url: '/vue-element-admin/diyform/query',
+    method: 'post',
+    data
+  })
+}
+
 const Survey = {
   diyList: diyList,
   queList: queList,
@@ -72,7 +80,8 @@ const Survey = {
   updateQue: updateQue,
   deleteDiyform: deleteDiyform,
   createDiyform: createDiyform,
-  updateDiyform: updateDiyform
+  updateDiyform: updateDiyform,
+  queryDiyform: queryDiyform
 }
 
 export default Survey

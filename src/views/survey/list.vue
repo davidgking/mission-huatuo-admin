@@ -1,17 +1,12 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-select v-model="listQuery.type" placeholder="类型" size="small" style="width:160px;" class="filter-item">
-        <el-option v-for="item in typeList" :key="item.value" :label="item.label" :value="item.value" />
-      </el-select>
-      <el-select v-model="listQuery.require" placeholder="是否必答" size="small" style="width:160px;" class="filter-item">
-        <el-option v-for="item in requireList" :key="item.value" :label="item.label" :value="item.value" />
-      </el-select>
+      <el-input v-model="listQuery.id" placeholder="ID" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <!-- <el-select v-model="listQuery.published" placeholder="是否已发布" size="small" style="width:160px;" class="filter-item">
+        <el-option v-for="item in statusList" :key="item.value" :label="item.label" :value="item.value" />
+      </el-select> -->
       <el-button class="filter-item" size="small" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
-      </el-button>
-      <el-button class="filter-item" size="small" style="margin-left: 10px;" type="success" icon="el-icon-circle-plus-outline" @click="handleAdd">
-        添加
       </el-button>
     </div>
 
@@ -22,57 +17,54 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="类型">
+      <el-table-column width="160px" align="center" label="调研表名称">
         <template slot-scope="{row}">
-          <span>{{ row.type | typeFilter }}</span>
+          <span>{{ row.formNameCn }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="300px" align="center" label="问题">
+      <el-table-column width="300px" align="center" label="English Name">
         <template slot-scope="{row}">
-          <span>{{ row.title }}</span>
+          <span>{{ row.formNameEn }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="80px" align="center" label="必答">
+      <el-table-column min-width="100px" label="描述">
         <template slot-scope="{row}">
-          <span>{{ row.require | requireFilter }}</span>
+          <span>{{ row.formDescriptionCn }}</span>
         </template>
       </el-table-column>
 
-      <!-- <el-table-column min-width="100px" align="center" label="答案">
+      <el-table-column align="center" label="发布时间">
         <template slot-scope="{row}">
-          <span>{{ row.answer }}</span>
-        </template>
-      </el-table-column> -->
-
-      <el-table-column label="备注">
-        <template slot-scope="{row}">
-          <span>{{ row.remark }}</span>
+          <span>{{ row.datetime }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="left" label="操作" width="160">
+      <el-table-column align="left" label="操作" width="200">
         <template slot-scope="{row}">
-          <el-button type="primary" size="small" @click="handleEdit(row)">编辑</el-button>
-          <el-button type="danger" size="small" @click="deleteRow(row)">删除</el-button>
+          <el-button type="warning" size="small" style="margin-left:0;" @click="handlePrew(row)">预览</el-button>
+          <router-link :to="'/survey/edit/'+row.id">
+            <el-button type="primary" size="small">编辑</el-button>
+          </router-link>
+          <el-button type="danger" size="small" style="margin-left:0;" @click="deleteRow(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
-    <question-form ref="questionForm" @saveForm="handleSave" />
+    <diyform-prew ref="diyformPrew" />
   </div>
 </template>
 
 <script>
 import Survey from '@/api/survey'
 import Pagination from '@/components/Pagination'
-import QuestionForm from '@/views/survey/components/QuestionForm'
+import DiyformPrew from '@/views/survey/components/DiyformPrew'
 
 export default {
-  name: 'Question',
-  components: { Pagination, QuestionForm },
+  name: 'Diyform',
+  components: { Pagination, DiyformPrew },
   filters: {
     typeFilter(value) {
       let text
@@ -92,7 +84,7 @@ export default {
       }
       return text
     },
-    requireFilter(value) {
+    statusFilter(value) {
       let text
       switch (Number(value)) {
         case 1:
@@ -116,20 +108,7 @@ export default {
         type: '',
         require: ''
       },
-      typeList: [{
-        label: '单行输入',
-        value: 1
-      }, {
-        label: '多行输入',
-        value: 2
-      }, {
-        label: '单项选择',
-        value: 3
-      }, {
-        label: '多项选择',
-        value: 4
-      }],
-      requireList: [{
+      statusList: [{
         label: '是',
         value: 1
       }, {
@@ -144,7 +123,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      Survey.queList(this.listQuery).then(response => {
+      Survey.diyList(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total
         this.listLoading = false
@@ -167,30 +146,33 @@ export default {
         })
       })
     },
-    handleSave() {
-      console.log(1)
-    },
-    handleAdd() {
-      this.$refs.questionForm.open(1, '', this.typeList, this.requireList)
-    },
-    handleEdit(row) {
-      this.$refs.questionForm.open(0, row, this.typeList, this.requireList)
-    },
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
+    },
+    handlePrew(row) {
+      this.$refs.diyformPrew.open(row)
     }
   }
 }
 </script>
 
-<style scoped>
-.edit-input {
-  padding-right: 100px;
-}
-.cancel-btn {
-  position: absolute;
-  right: 15px;
-  top: 10px;
+<style lang="scss">
+
+.new-prew-content {
+  font-size: 16px;
+  line-height: 1.2;
+  margin: 0 20px;
+  .prew-title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 900;
+    margin: 10px;
+  }
+  .half-box {
+    display: inline-block;
+    width: 48%;
+    padding: 10px 30px;
+  }
 }
 </style>
